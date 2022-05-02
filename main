@@ -1,0 +1,75 @@
+import os
+import time
+from os import path
+from time import sleep
+import json
+from amino import Client
+try:
+    import colorama
+except ModuleNotFoundError:
+    os.system("pip install colorama")
+    import colorama
+try:
+    import pyfiglet
+except ModuleNotFoundError:
+    os.system("pip install pyfiglet")
+    import pyfiglet
+from colorama import init, Fore, Back, Style
+print("\n\33[93;5;5m\33[93;5;234m ❮ CHATTING ONLINE STATUS ❯ \33[0m\33[93;5;235m\33[93;5;5m \33[0m")
+init()
+print(Fore.GREEN + Style.BRIGHT)
+print(pyfiglet.figlet_format("TECH", font="cybermedium"))
+print(pyfiglet.figlet_format("VISION", font="cybermedium"))
+THIS_FOLDER=path.dirname(path.abspath(__file__))
+emailfile=path.join(THIS_FOLDER,'accounts.json')
+dm=["Chatting"]
+link=input("Chat link :")
+xd=Client().get_from_code(link)
+cid=xd.path[1:xd.path.index("/")]
+
+dictlist=[]
+with open(emailfile)as f:
+	dictlist=json.load(f)
+
+def online_bot(cli, comId):
+        data = {
+            "o": {
+                "actions": ["Browsing"],
+                "target": f"ndc://x{comId}/",
+                "ndcId": int(comId),
+                "id": "82333"
+            },
+            "t":304}
+        data = json.dumps(data)
+        sleep(2)
+        cli.socket.send(data)
+
+def log(cli : Client,email : str, password : str):
+    try:
+        cli.login(email=email,password=password)
+        print(f'\33[0m'+f"\nLogged in with {email}")
+    except Exception as t:
+    	print(t)
+        	
+def threadit(acc : dict):
+	email=acc["email"]
+	password=acc["password"]
+	client=Client()
+	log(cli=client,email=email,password=password)
+	try:
+		client.join_community(comId=cid)
+		online_bot(cli=client,comId=cid)
+		client.send_action(actions=dm,comId=cid,chatId=xd)
+		print(f'\33[0m'+f" \n{email} is Online")
+		client.logout()
+	except:
+	   pass
+    
+def main():
+    print(f'\33[0m' + f" \nTotal accounts : {len(dictlist)}")
+    for amp in dictlist:
+    	threadit(amp)
+    print(f'\33[0m'+ f"\nAll the {len(dictlist)} accounts are online in the community")
+
+if __name__ == '__main__':
+	main()  
